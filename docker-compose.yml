@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  proxy:
+    image: nginx:latest
+    ports:
+      - 8080:80
+    restart: always
+    volumes:
+      - ./nginx/conf/:/etc/nginx/conf.d/:ro
+  app:
+    build: .
+    expose:
+      - 8080
+  peerjs:
+    image: peerjs/peerjs-server
+    command: 
+    expose:
+      - 9000

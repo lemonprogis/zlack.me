@@ -1,0 +1,14 @@
+<%- include('partials/header', { title: 'Home' }) %>
+<!-- About Section-->
+<section class="bg-light py-5">
+    <div class="container px-5">
+        <div id="video-grid"></div>
+    </div>
+</section>
+<script>
+    const ROOM_ID = "<%= roomId %>"
+</script>
+<script defer src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
+<script src="/socket.io/socket.io.js" defer></script>
+<script src="script.js" defer></script>
+<%- include('partials/footer') %>
