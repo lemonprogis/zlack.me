@@ -1,6 +1,7 @@
 const socket = io('/')
 const videoGrid = document.getElementById('video-grid')
 const myPeer = new Peer(undefined, {
+  host: 'zlack.me',
   path: '/pjs',
   secure: true
 })
