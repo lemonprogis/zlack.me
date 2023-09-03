@@ -1,7 +1,13 @@
 const express = require('express')
 const app = express()
 const server = require('http').Server(app)
-const io = require('socket.io')(server)
+const io = require('socket.io')(server, {
+  cors: {
+    origin: "https://zlack.me",
+    transports: ['websocket', 'polling']
+  },
+  allowEIO3: true
+})
 const { v4: uuidV4 } = require('uuid')
 
 const PORT = 8080;
@@ -24,10 +30,12 @@ app.get('/:room', (req, res) => {
 
 io.on('connection', socket => {
   socket.on('join-room', (roomId, userId) => {
+    console.log('room ', roomId, 'being joined by ', userId)
     socket.join(roomId)
     socket.to(roomId).broadcast.emit('user-connected', userId)
 
     socket.on('disconnect', () => {
+      console.log('user ', userId, 'leaving ', roomId)
       socket.to(roomId).broadcast.emit('user-disconnected', userId)
     })
   })
