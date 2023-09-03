@@ -1,4 +1,4 @@
-const socket = io('https://zlack.me')
+const socket = io('/')
 const videoGrid = document.getElementById('video-grid')
 const myPeer = new Peer(undefined, {
   host: 'zlack.me',
