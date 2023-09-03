@@ -1,4 +1,4 @@
-<%- include('partials/header', { title: 'Home' }) %>
+<%- include('partials/header', { title: 'Room' }) %>
 <script>
     const ROOM_ID = "<%= roomId %>"
 </script>
@@ -8,6 +8,9 @@
 <!-- About Section-->
 <section class="bg-light py-5">
     <div class="container px-5">
+        <div id="share">
+            <button type="button" class="btn btn-success" onclick="copyRoomUrl()">Get your room link</button>
+        </div>
         <div id="video-grid"></div>
     </div>
 </section>

@@ -61,3 +61,11 @@ function addVideoStream(video, stream) {
   })
   videoGrid.append(video)
 }
+
+function copyRoomUrl() {
+  navigator.clipboard.writeText(window.location.href).then(function() {
+    console.log('room copied!')
+  }, function(err) {
+    console.log('unable to copy')
+  })
+}
