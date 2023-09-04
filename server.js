@@ -22,7 +22,17 @@ app.get('/:room', (req, res) => {
   res.render('room', { roomId: req.params.room })
 })
 
+// some mobile setup (make the user be available IF it has that query)
+io.use((socket, next) => {
+  if (socket.handshake.query) {
+    let callerId = socket.handshake.query.callerId;
+    socket.user = callerId;
+    next();
+  }
+})
+
 io.on('connection', socket => {
+  // web rooms
   socket.on('join-room', (roomId, userId) => {
     console.log('room ', roomId, 'being joined by ', userId)
     socket.join(roomId)
@@ -31,6 +41,39 @@ io.on('connection', socket => {
     socket.on('disconnect', () => {
       console.log('user ', userId, 'leaving ', roomId)
       socket.to(roomId).broadcast.emit('user-disconnected', userId)
+    })
+  })
+
+  // mobile call
+  socket.on('call', (data) => {
+    let calleeId = data.calleeId
+    let rtcMessage = data.rtcMessage
+
+    socket.to(calleeId).emit("newCall", {
+      callerId: socket.user,
+      rtcMessage: rtcMessage,
+    })
+  })
+
+  socket.on("answerCall", (data) => {
+    let callerId = data.callerId;
+    rtcMessage = data.rtcMessage;
+
+    socket.to(callerId).emit("callAnswered", {
+      callee: socket.user,
+      rtcMessage: rtcMessage,
+    })
+  })
+
+  socket.on("ICEcandidate", (data) => {
+    console.log("ICEcandidate data.calleeId", data.calleeId);
+    let calleeId = data.calleeId;
+    let rtcMessage = data.rtcMessage;
+    console.log("socket.user emit", socket.user);
+
+    socket.to(calleeId).emit("ICEcandidate", {
+      sender: socket.user,
+      rtcMessage: rtcMessage,
     })
   })
 })
