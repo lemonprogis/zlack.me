@@ -7,6 +7,7 @@ const myPeer = new Peer(undefined, {
 })
 
 const myVideo = document.createElement('video')
+myVideo.setAttribute('playsinline', '')
 myVideo.muted = true
 const peers = {}
 
