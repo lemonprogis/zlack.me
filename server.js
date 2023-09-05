@@ -37,11 +37,11 @@ io.on('connection', socket => {
     console.log('room ', roomId, 'being joined by ', userId)
     socket.join(roomId)
     socket.to(roomId).broadcast.emit('user-connected', userId)
-  })
 
-  socket.on('disconnect', () => {
-    console.log('user ', userId, 'leaving ', roomId)
-    socket.to(roomId).broadcast.emit('user-disconnected', userId)
+    socket.on('disconnect', () => {
+      console.log('user ', userId, 'leaving ', roomId)
+      socket.to(roomId).broadcast.emit('user-disconnected', userId)
+    })
   })
 })
 
