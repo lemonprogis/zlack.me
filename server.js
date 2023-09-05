@@ -37,46 +37,11 @@ io.on('connection', socket => {
     console.log('room ', roomId, 'being joined by ', userId)
     socket.join(roomId)
     socket.to(roomId).broadcast.emit('user-connected', userId)
-
-    socket.on('disconnect', () => {
-      console.log('user ', userId, 'leaving ', roomId)
-      socket.to(roomId).broadcast.emit('user-disconnected', userId)
-    })
   })
 
-  // mobile call
-  socket.on('call', (data) => {
-    console.log('mobile call...')
-    let calleeId = data.calleeId
-    let rtcMessage = data.rtcMessage
-
-    socket.to(calleeId).emit("newCall", {
-      callerId: socket.user,
-      rtcMessage: rtcMessage,
-    })
-  })
-
-  socket.on("answerCall", (data) => {
-    console.log('caller is answering...')
-    let callerId = data.callerId;
-    rtcMessage = data.rtcMessage;
-
-    socket.to(callerId).emit("callAnswered", {
-      callee: socket.user,
-      rtcMessage: rtcMessage,
-    })
-  })
-
-  socket.on("ICEcandidate", (data) => {
-    console.log("ICEcandidate data.calleeId", data.calleeId);
-    let calleeId = data.calleeId;
-    let rtcMessage = data.rtcMessage;
-    console.log("socket.user emit", socket.user);
-
-    socket.to(calleeId).emit("ICEcandidate", {
-      sender: socket.user,
-      rtcMessage: rtcMessage,
-    })
+  socket.on('disconnect', () => {
+    console.log('user ', userId, 'leaving ', roomId)
+    socket.to(roomId).broadcast.emit('user-disconnected', userId)
   })
 })
 
