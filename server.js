@@ -46,6 +46,7 @@ io.on('connection', socket => {
 
   // mobile call
   socket.on('call', (data) => {
+    console.log('mobile call...')
     let calleeId = data.calleeId
     let rtcMessage = data.rtcMessage
 
@@ -56,6 +57,7 @@ io.on('connection', socket => {
   })
 
   socket.on("answerCall", (data) => {
+    console.log('caller is answering...')
     let callerId = data.callerId;
     rtcMessage = data.rtcMessage;
 
