@@ -22,15 +22,6 @@ app.get('/:room', (req, res) => {
   res.render('room', { roomId: req.params.room })
 })
 
-// some mobile setup (make the user be available IF it has that query)
-io.use((socket, next) => {
-  if (socket.handshake.query) {
-    let callerId = socket.handshake.query.callerId;
-    socket.user = callerId;
-    next();
-  }
-})
-
 io.on('connection', socket => {
   // web rooms
   socket.on('join-room', (roomId, userId) => {

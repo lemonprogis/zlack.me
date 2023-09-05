@@ -1,5 +1,6 @@
 const socket = io()
 const videoGrid = document.getElementById('video-grid')
+
 const myPeer = new Peer(undefined, {
   host: 'zlack.me',
   path: '/',
@@ -29,6 +30,19 @@ navigator.mediaDevices.getUserMedia({
   socket.on('user-connected', userId => {
     connectToNewUser(userId, stream)
   })
+
+  // add event handlers for muting audio/video for my video
+  const audioMute = document.getElementById('mute-audio-btn')
+  const videoMute = document.getElementById('mute-video-btn')
+
+  audioMute.onclick = (e) => {
+    muteAudio(stream)
+  }
+  
+  videoMute.onclick = (e)  => {
+    muteVideo(stream)
+  }
+
 })
 
 socket.on('user-disconnected', userId => {
@@ -46,6 +60,7 @@ myPeer.on('open', id => {
 function connectToNewUser(userId, stream) {
   const call = myPeer.call(userId, stream)
   const video = document.createElement('video')
+  video.setAttribute('playsinline', '')
   call.on('stream', userVideoStream => {
     addVideoStream(video, userVideoStream)
   })
@@ -54,6 +69,11 @@ function connectToNewUser(userId, stream) {
   })
 
   peers[userId] = call
+}
+
+function createVideoSection(video) {
+  const videoDiv = document.createElement('div')
+  
 }
 
 function addVideoStream(video, stream) {
@@ -70,4 +90,12 @@ function copyRoomUrl() {
   }, function(err) {
     console.log('unable to copy')
   })
+}
+
+function muteAudio(myStream) {
+  myStream.getAudioTracks()[0].enabled = !(myStream.getAudioTracks()[0].enabled);
+}
+
+function muteVideo(myStream) {
+  myStream.getVideoTracks()[0].enabled = !(myStream.getVideoTracks()[0].enabled);
 }
