@@ -68,14 +68,10 @@ function connectToNewUser(userId, stream) {
   })
   call.on('close', () => {
     video.remove()
+    delete peers[userId]
   })
 
   peers[userId] = call
-}
-
-function createVideoSection(video) {
-  const videoDiv = document.createElement('div')
-  
 }
 
 function addVideoStream(video, stream) {
