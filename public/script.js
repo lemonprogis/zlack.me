@@ -37,10 +37,12 @@ navigator.mediaDevices.getUserMedia({
 
   audioMute.onclick = (e) => {
     muteAudio(stream)
+    toggleButtonClass(audioMute)
   }
   
   videoMute.onclick = (e)  => {
     muteVideo(stream)
+    toggleButtonClass(videoMute)
   }
 
 })
@@ -98,4 +100,15 @@ function muteAudio(myStream) {
 
 function muteVideo(myStream) {
   myStream.getVideoTracks()[0].enabled = !(myStream.getVideoTracks()[0].enabled);
+}
+
+function toggleButtonClass(btn) {
+  const isActive = btn.classList.contains('btn-danger')
+  if (!isActive) {
+    btn.classList.add('btn-danger')
+    btn.classList.remove('btn-primary')
+  } else {
+    btn.classList.remove('btn-danger')
+    btn.classList.add('btn-primary')
+  }
 }
