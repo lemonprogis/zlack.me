@@ -68,7 +68,7 @@ function connectToNewUser(userId, stream) {
   })
   call.on('close', () => {
     video.remove()
-    delete peers[userId]
+    // delete peers[userId]
   })
 
   peers[userId] = call
