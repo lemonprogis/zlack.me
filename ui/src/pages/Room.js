@@ -87,7 +87,7 @@ const Room = (props) => {
             secure: true
           });
 
-        peer.on("call", signal => {
+        peer.on("signal", signal => {
             socketRef.current.emit("sending signal", { userToSignal, callerID, signal })
         });
 
@@ -101,7 +101,7 @@ const Room = (props) => {
             secure: true
           });
 
-        peer.on("call", signal => {
+        peer.on("signal", signal => {
             socketRef.current.emit("returning signal", { signal, callerID })
         });
 
