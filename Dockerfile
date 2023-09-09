@@ -1,4 +1,5 @@
 FROM node:14.20.0
+ENV PROD=true
 
 EXPOSE 8080
 

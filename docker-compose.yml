@@ -21,6 +21,10 @@ services:
     image: lemonpro/zlack:latest
     expose:
       - 8080
+  ui:
+    image: lemonpro/zlack-chat:latest
+    expose:
+      - 3000
   peerjs:
     image: peerjs/peerjs-server
     command: --cors='*' --proxied='true'
