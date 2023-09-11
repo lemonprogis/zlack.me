@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import io from "socket.io-client";
-import Peer from "peerjs";
+import Peer from "simple-peer";
 import styled from "styled-components";
 import { useParams } from 'react-router';
 
@@ -21,10 +21,8 @@ const Video = (props) => {
     const ref = useRef();
 
     useEffect(() => {
-        props.peer.on("stream", stream => {
-            ref.current.srcObject = stream;
-        })
-    }, [props.peer]);
+        props.peer.on("stream", stream => ref.current.srcObject = stream);
+    });
 
     return (
         <StyledVideo playsInline autoPlay ref={ref} />
@@ -57,11 +55,11 @@ const Room = (props) => {
                     peersRef.current.push({
                         peerID: userID,
                         peer,
-                    })
+                    });
                     peers.push(peer);
-                })
+                });
                 setPeers(peers);
-            })
+            });
 
             socketRef.current.on("user joined", payload => {
                 const peer = addPeer(payload.signal, payload.callerID, stream);
@@ -77,16 +75,16 @@ const Room = (props) => {
                 const item = peersRef.current.find(p => p.peerID === payload.id);
                 item.peer.signal(payload.signal);
             });
-        })
-    }, [roomID]);
+        });
+    }, []);
 
     function createPeer(userToSignal, callerID, stream) {
-        const peer = new Peer(undefined, {
-            host: 'zlack.me',
-            path: '/',
-            secure: true
-          });
-
+        const peer = new Peer({
+            initiator: true,
+            trickle: false,
+            stream
+        });
+        peer._debug = console.log
         peer.on("signal", signal => {
             socketRef.current.emit("sending signal", { userToSignal, callerID, signal })
         });
@@ -95,11 +93,12 @@ const Room = (props) => {
     }
 
     function addPeer(incomingSignal, callerID, stream) {
-        const peer = new Peer(undefined, {
-            host: 'zlack.me',
-            path: '/',
-            secure: true
-          });
+        const peer = new Peer({
+            initiator: false,
+            trickle: false,
+            stream
+        });
+        peer._debug = console.log
 
         peer.on("signal", signal => {
             socketRef.current.emit("returning signal", { signal, callerID })
