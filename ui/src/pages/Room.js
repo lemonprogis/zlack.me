@@ -69,6 +69,10 @@ const Room = (props) => {
                     peer,
                 })
 
+                peer.on("close", () => {
+                    setPeers(users => users.filter(user => user.peerID !== payload.callerID));
+                })
+
                 setPeers(users => [...users, peer]);
             });
 
