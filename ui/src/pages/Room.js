@@ -18,13 +18,13 @@ const Video = (props) => {
     }, []);
 
     return (
-        <StyledVideo class="card-img-top" playsInline autoPlay ref={ref} />
+        <StyledVideo playsInline autoPlay ref={ref} />
     );
 }
 
 const VideoWrapper = ({children}) => {
     return (
-        <div class="card">
+        <div class="col">
         {children}
         </div>
     )
@@ -115,7 +115,7 @@ const Room = (props) => {
             <div class="container px-12">
                 <div class="row">
                     <VideoWrapper>
-                        <StyledVideo class="card-img-top" muted ref={userVideo} autoPlay playsInline />
+                        <StyledVideo muted ref={userVideo} autoPlay playsInline />
                     </VideoWrapper>
                     {peers.map((peer, index) => {
                         return (
