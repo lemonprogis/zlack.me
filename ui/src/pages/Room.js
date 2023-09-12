@@ -4,13 +4,6 @@ import Peer from "simple-peer";
 import styled from "styled-components";
 import { useParams } from 'react-router';
 
-const Container = styled.div`
-    padding: 10px;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, 400px);
-    grid-auto-rows: 400px;
-`;
-
 const StyledVideo = styled.video`
     width: 100%;
     height: 100%;
@@ -22,11 +15,19 @@ const Video = (props) => {
 
     useEffect(() => {
         props.peer.on("stream", stream => ref.current.srcObject = stream);
-    });
+    }, []);
 
     return (
-        <StyledVideo playsInline autoPlay ref={ref} />
+        <StyledVideo class="card-img-top" playsInline autoPlay ref={ref} />
     );
+}
+
+const VideoWrapper = ({children}) => {
+    return (
+        <div class="card">
+        {children}
+        </div>
+    )
 }
 
 
@@ -111,16 +112,20 @@ const Room = (props) => {
 
     return (
         <section class="bg-light py-5">
-        <div class="container px-12">
-            <Container>
-                <StyledVideo muted ref={userVideo} autoPlay playsInline />
-                {peers.map((peer, index) => {
-                    return (
-                        <Video key={index} peer={peer} />
-                    );
-                })}
-            </Container>
-        </div>
+            <div class="container px-12">
+                <div class="row">
+                    <VideoWrapper>
+                        <StyledVideo class="card-img-top" muted ref={userVideo} autoPlay playsInline />
+                    </VideoWrapper>
+                    {peers.map((peer, index) => {
+                        return (
+                            <VideoWrapper>
+                                <Video key={index} peer={peer} />
+                            </VideoWrapper>
+                        );
+                    })}
+                </div>
+            </div>
     </section>
     );
 };
