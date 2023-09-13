@@ -15,6 +15,7 @@ const Video = (props) => {
 
     useEffect(() => {
         props.peer.on("stream", stream => ref.current.srcObject = stream);
+        props.peer.on("close", () => ref.current.remove() );
     }, []);
 
     return (
@@ -67,12 +68,7 @@ const Room = (props) => {
                 peersRef.current.push({
                     peerID: payload.callerID,
                     peer,
-                })
-
-                peer.on("close", () => {
-                    setPeers(users => users.filter(user => user.peerID !== payload.callerID));
-                })
-
+                });
                 setPeers(users => [...users, peer]);
             });
 
@@ -89,7 +85,7 @@ const Room = (props) => {
             trickle: false,
             stream
         });
-        peer._debug = console.log
+        
         peer.on("signal", signal => {
             socketRef.current.emit("sending signal", { userToSignal, callerID, signal })
         });
@@ -103,8 +99,7 @@ const Room = (props) => {
             trickle: false,
             stream
         });
-        peer._debug = console.log
-
+        
         peer.on("signal", signal => {
             socketRef.current.emit("returning signal", { signal, callerID })
         });
