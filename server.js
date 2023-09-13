@@ -49,8 +49,8 @@ io.on('connection', socket => {
         if (room) {
             room = room.filter(id => id !== socket.id);
             users[roomID] = room;
-            socket.emit("all users", users);
         }
+        socket.broadcast.emit("user left", socket.id);
     });
 
 });

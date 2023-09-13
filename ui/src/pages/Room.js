@@ -15,7 +15,6 @@ const Video = (props) => {
 
     useEffect(() => {
         props.peer.on("stream", stream => ref.current.srcObject = stream);
-        props.peer.on("close", () => ref.current.remove() );
     }, []);
 
     return (
@@ -58,7 +57,10 @@ const Room = (props) => {
                         peerID: userID,
                         peer,
                     });
-                    peers.push(peer);
+                    peers.push({
+                        peerID: userID,
+                        peer,
+                    });
                 });
                 setPeers(peers);
             });
@@ -69,12 +71,28 @@ const Room = (props) => {
                     peerID: payload.callerID,
                     peer,
                 });
-                setPeers(users => [...users, peer]);
+                const peerObj = {
+                    peer,
+                    peerID: payload.callerID
+                };
+
+                setPeers(users => [...users, peerObj]);
             });
 
             socketRef.current.on("receiving returned signal", payload => {
                 const item = peersRef.current.find(p => p.peerID === payload.id);
                 item.peer.signal(payload.signal);
+            });
+
+            socketRef.current.on("user left", id => {
+                const peerObj = peersRef.current.find(p => p.peerID === id);
+                if (peerObj) {
+                    peerObj.peer.destroy();
+                }
+
+                const peers = peersRef.current.filter(p => p.peerID !== id);
+                peersRef.current = peers;
+                setPeers(peers);
             });
         });
     }, []);
@@ -116,10 +134,10 @@ const Room = (props) => {
                     <VideoWrapper>
                         <StyledVideo muted ref={userVideo} autoPlay playsInline />
                     </VideoWrapper>
-                    {peers.map((peer, index) => {
+                    {peers.map(p => {
                         return (
                             <VideoWrapper>
-                                <Video key={index} peer={peer} />
+                                <Video key={p.peerID} peer={p.peer} />
                             </VideoWrapper>
                         );
                     })}
