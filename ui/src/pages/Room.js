@@ -3,6 +3,9 @@ import io from "socket.io-client";
 import Peer from "simple-peer";
 import styled from "styled-components";
 import { useParams } from 'react-router';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faVideo, faMicrophone } from "@fortawesome/free-solid-svg-icons"
+import CopyLinkButton from "../components/CopyLinkButton";
 
 const StyledVideo = styled.video`
     width: 100%;
@@ -38,8 +41,11 @@ const videoConstraints = {
 
 const Room = (props) => {
     const [peers, setPeers] = useState([]);
+    const [micActive, setMicActive] = useState(true);
+    const [cameraActive, setCameraActive] = useState(true);
     const socketRef = useRef();
     const userVideo = useRef();
+    const userStream = useRef();
     const peersRef = useRef([]);
     const params = useParams();
     const roomID = params.roomID;
@@ -48,6 +54,9 @@ const Room = (props) => {
         socketRef.current = io.connect("/");
         navigator.mediaDevices.getUserMedia({ video: videoConstraints, audio: true }).then(stream => {
             userVideo.current.srcObject = stream;
+            userStream.current = stream;
+            userVideo.current.muted = true;
+
             socketRef.current.emit("join room", roomID);
             socketRef.current.on("all users", users => {
                 const peers = [];
@@ -127,9 +136,32 @@ const Room = (props) => {
         return peer;
     }
 
+    function muteAudio() {
+        setMicActive(!micActive);
+        userStream.current.getAudioTracks()[0].enabled = !(userStream.current.getAudioTracks()[0].enabled);
+    }
+
+    function muteVideo() {
+        setCameraActive(!cameraActive);
+        userStream.current.getVideoTracks()[0].enabled = !(userStream.current.getVideoTracks()[0].enabled);
+    }
+
     return (
         <section class="bg-light py-5">
             <div class="container px-12">
+                <div class="row">
+                    <div class="col">
+                        <div class="btn-group btn-group-lg" role="group" arial-label="">
+                            <CopyLinkButton />
+                            <button type="button"  className={micActive ? "btn btn-primary" : "btn btn-danger"} onClick={muteAudio}>
+                                <FontAwesomeIcon icon={faMicrophone}></FontAwesomeIcon>
+                            </button>
+                            <button type="button"  className={cameraActive ? "btn btn-primary" : "btn btn-danger"} onClick={muteVideo}>
+                                <FontAwesomeIcon icon={faVideo}></FontAwesomeIcon>
+                            </button>
+                        </div>
+                    </div>
+                </div>
                 <div class="row">
                     <VideoWrapper>
                         <StyledVideo muted ref={userVideo} autoPlay playsInline />
