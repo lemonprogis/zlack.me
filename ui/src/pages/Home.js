@@ -1,9 +1,10 @@
 import React from 'react';
 import ZlackLogo from '../components/ZlackLogo';
+import PageWrapper from '../components/PageWrapper';
 
 function Home() {
     return (
-        <>
+        <PageWrapper>
             <header class="py-5">
             <div class="container px-5 pb-5">
                 <div class="row gx-5 align-items-center">
@@ -41,7 +42,7 @@ function Home() {
                 </div>
             </div>
         </section>
-    </>
+    </PageWrapper>
     );
 }
 

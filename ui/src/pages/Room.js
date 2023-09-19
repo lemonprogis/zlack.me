@@ -1,17 +1,38 @@
-import React, { useEffect, useRef, useState } from "react";
-import io from "socket.io-client";
-import Peer from "simple-peer";
+import React, { useEffect, useRef, useState } from 'react';
+import io from 'socket.io-client';
+import Peer from 'simple-peer';
 import styled from "styled-components";
+import { PackedGrid } from 'react-packed-grid';
 import { useParams } from 'react-router';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faVideo, faMicrophone } from "@fortawesome/free-solid-svg-icons"
-import CopyLinkButton from "../components/CopyLinkButton";
+import CopyLinkButton from '../components/CopyLinkButton';
+import './Room.css';
 
 const StyledVideo = styled.video`
+    -moz-transform: scale(-1, 1);
+    -webkit-transform: scale(-1, 1);
+    -o-transform: scale(-1, 1);
+    transform: scale(-1, 1);
+    filter: FlipH;
+`;
+
+const StyledGridDiv = styled.div`
+    backgroundColor: whitesmoke;
+    display: grid;
+    placeContent: center;
     width: 100%;
     height: 100%;
-    object-fit: cover;
 `;
+
+const VideoWrapper = ({ children }) => {
+    return (
+      <StyledGridDiv>
+        {children}
+      </StyledGridDiv>
+    )
+  }
+  
 
 const Video = (props) => {
     const ref = useRef();
@@ -21,18 +42,11 @@ const Video = (props) => {
     }, []);
 
     return (
-        <StyledVideo playsInline autoPlay ref={ref} />
+        <VideoWrapper key={props.key}>
+            <StyledVideo playsInline autoPlay ref={ref} />
+        </VideoWrapper>
     );
 }
-
-const VideoWrapper = ({children}) => {
-    return (
-        <div class="col">
-        {children}
-        </div>
-    )
-}
-
 
 const videoConstraints = {
     height: window.innerHeight / 2,
@@ -147,35 +161,31 @@ const Room = (props) => {
     }
 
     return (
-        <section class="bg-light py-5">
-            <div class="container px-12">
-                <div class="row">
-                    <div class="col">
-                        <div class="btn-group btn-group-lg" role="group" arial-label="">
-                            <CopyLinkButton />
-                            <button type="button"  className={micActive ? "btn btn-primary" : "btn btn-danger"} onClick={muteAudio}>
-                                <FontAwesomeIcon icon={faMicrophone}></FontAwesomeIcon>
-                            </button>
-                            <button type="button"  className={cameraActive ? "btn btn-primary" : "btn btn-danger"} onClick={muteVideo}>
-                                <FontAwesomeIcon icon={faVideo}></FontAwesomeIcon>
-                            </button>
-                        </div>
-                    </div>
+        <>
+            <div class="controls">
+                <div class="btn-group btn-group-lg" role="group" arial-label="">
+                    <CopyLinkButton />
+                    <button type="button"  className={micActive ? "btn btn-primary" : "btn btn-danger"} onClick={muteAudio}>
+                        <FontAwesomeIcon icon={faMicrophone}></FontAwesomeIcon>
+                    </button>
+                    <button type="button"  className={cameraActive ? "btn btn-primary" : "btn btn-danger"} onClick={muteVideo}>
+                        <FontAwesomeIcon icon={faVideo}></FontAwesomeIcon>
+                    </button>
                 </div>
-                <div class="row">
-                    <VideoWrapper>
-                        <StyledVideo muted ref={userVideo} autoPlay playsInline />
-                    </VideoWrapper>
-                    {peers.map(p => {
-                        return (
-                            <VideoWrapper>
-                                <Video key={p.peerID} peer={p.peer} />
-                            </VideoWrapper>
-                        );
-                    })}
-                </div>
+            
             </div>
-    </section>
+        
+            <PackedGrid>
+                <VideoWrapper>
+                    <StyledVideo muted ref={userVideo} autoPlay playsInline />
+                </VideoWrapper>
+                {peers.map(p => {
+                    return (
+                        <Video key={p.peerID} peer={p.peer} />
+                    );
+                })}
+            </PackedGrid>
+    </>
     );
 };
 
