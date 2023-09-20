@@ -6,11 +6,20 @@ import { useParams } from 'react-router';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faVideo, faMicrophone } from "@fortawesome/free-solid-svg-icons"
 import CopyLinkButton from "../components/CopyLinkButton";
+import "./room.css";
 
 const StyledVideo = styled.video`
     width: 100%;
     height: 100%;
     object-fit: cover;
+    -moz-transform: scale(-1, 1);
+    -webkit-transform: scale(-1, 1);
+    -o-transform: scale(-1, 1);
+    transform: scale(-1, 1);
+    filter: FlipH;
+    -webkit-box-shadow: 0px 0px 4px 0px #5c5c5c;
+            box-shadow: 0px 0px 4px 0px #5c5c5c;
+    padding: 3px;
 `;
 
 const Video = (props) => {
@@ -27,7 +36,7 @@ const Video = (props) => {
 
 const VideoWrapper = ({children}) => {
     return (
-        <div class="col">
+        <div class="box-shadow">
         {children}
         </div>
     )
@@ -150,8 +159,8 @@ const Room = (props) => {
         <section class="bg-light py-5">
             <div class="container px-12">
                 <div class="row">
-                    <div class="col">
-                        <div class="btn-group btn-group-lg" role="group" arial-label="">
+                    <div class="col video-controls text-center">
+                        <div class="btn-group btn-group-lg" role="group">
                             <CopyLinkButton />
                             <button type="button"  className={micActive ? "btn btn-primary" : "btn btn-danger"} onClick={muteAudio}>
                                 <FontAwesomeIcon icon={faMicrophone}></FontAwesomeIcon>
