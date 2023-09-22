@@ -36,8 +36,10 @@ const Video = (props) => {
 
 const VideoWrapper = ({children}) => {
     return (
-        <div class="box-shadow">
-        {children}
+        <div class="col-3">
+            <div class="box-shadow">
+             {children}
+            </div>
         </div>
     )
 }
